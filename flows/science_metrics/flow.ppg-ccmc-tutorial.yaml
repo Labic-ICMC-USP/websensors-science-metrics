@@ -1,0 +1,138 @@
+project:
+  name: "websensors-science-metrics"
+  version: "0.2.0"
+  description: "Tutorial de análise de um grupo de cinco pesquisadores do PPG-CCMC/ICMC-USP."
+
+environment:
+  name: "tutorial-local"
+  owner: "WebSensors"
+  tags:
+    domain: "science-metrics"
+    program: "PPG-CCMC"
+    institution: "ICMC-USP"
+
+runtime:
+  report_dir: "./outputs/ppg_ccmc_tutorial/reports"
+  fail_fast: true
+  include_traceback: true
+  raise_on_failure: false
+  console:
+    enabled: true
+    progress: true
+    show_metrics: true
+
+observability:
+  mlflow:
+    enabled: true
+    tracking_uri: "http://127.0.0.1:5000"
+    experiment_name: "websensors-science-metrics-ppg-ccmc"
+    run_name: "ppg-ccmc-tutorial"
+  graylog:
+    enabled: false
+
+pipeline:
+  params:
+    group:
+      # O nome do grupo também define o nome-base do banco ArcadeDB.
+      name: "ppg_ccmc_tutorial"
+      researchers:
+        # Neste tutorial usamos apenas nome + pistas institucionais.
+        # O objetivo é exercitar a busca top-N e a resolução de identidade.
+        - name: "Ricardo Marcondes Marcacini"
+          institution_hint: "Universidade de São Paulo"
+          country_hint: "BR"
+
+        - name: "Solange Oliveira Rezende"
+          institution_hint: "Universidade de São Paulo"
+          country_hint: "BR"
+
+        - name: "Alneu de Andrade Lopes"
+          institution_hint: "Universidade de São Paulo"
+          country_hint: "BR"
+
+        - name: "Adenilso da Silva Simão"
+          institution_hint: "Universidade de São Paulo"
+          country_hint: "BR"
+
+        - name: "Diego Furtado Silva"
+          institution_hint: "Universidade de São Paulo"
+          country_hint: "BR"
+
+    arcadedb:
+      base_url: "http://127.0.0.1:2480"
+      username: "root"
+      password_env: "ARCADEDB_PASSWORD"
+      password: "playwithdata"
+      recreate_on_run: true
+      timeout_seconds: 45
+      readiness_attempts: 20
+      readiness_delay_seconds: 1
+
+    openalex:
+      base_url: "https://api.openalex.org"
+      api_key_env: "OPENALEX_API_KEY"
+      api_key: ""
+      mailto: ""
+      top_n_candidates: 5
+      start_year: 2015
+      end_year: 2026
+      per_page: 200
+      max_pages_per_candidate: 20
+      request_delay_ms: 120
+      timeout_seconds: 45
+      max_institutions_to_enrich: 500
+      max_sources_to_enrich: 300
+
+      # Trabalhos extras de cada coautor usados somente como evidência de
+      # instituição e país principais. Eles não entram na produção do grupo.
+      coauthor_recent_works: 10
+
+      # Para o primeiro teste, 50 reduz o tempo de execução. Use 0 para todos.
+      max_external_coauthors: 50
+
+    modeling:
+      entity_resolution:
+        merge_threshold: 0.72
+        evidence_edge_threshold: 0.55
+        selection_ambiguity_margin: 0.08
+        allow_cross_seed_merge: true
+        weight_name: 0.25
+        weight_work_overlap: 0.28
+        weight_doi_overlap: 0.17
+        weight_coauthor_overlap: 0.12
+        weight_institution_overlap: 0.08
+        weight_topic_overlap: 0.05
+        weight_country_overlap: 0.03
+        weight_same_seed: 0.02
+        conflicting_orcid_score_cap: 0.44
+      institution:
+        fuzzy_threshold: 92
+        recency_decay: 0.86
+
+    reporting:
+      base_country: "BR"
+
+steps:
+  - name: "01_ingest_data"
+    class_path: "projects.science_metrics.steps.IngestDataStep"
+    config_path: "steps/01_ingest_data.yaml"
+
+  - name: "02_preprocess_kg"
+    class_path: "projects.science_metrics.steps.PreprocessKnowledgeGraphStep"
+    config_path: "steps/02_preprocess_kg.yaml"
+
+  - name: "03_resolve_identity"
+    class_path: "projects.science_metrics.steps.ResolveResearcherIdentityStep"
+    config_path: "steps/03_resolve_identity.yaml"
+
+  - name: "04_primary_institution"
+    class_path: "projects.science_metrics.steps.InferPrincipalInstitutionStep"
+    config_path: "steps/04_primary_institution.yaml"
+
+  - name: "05_enrich_coauthors"
+    class_path: "projects.science_metrics.steps.EnrichCoauthorsStep"
+    config_path: "steps/05_enrich_coauthors.yaml"
+
+  - name: "06_reporting"
+    class_path: "projects.science_metrics.steps.BuildScienceMetricsReportsStep"
+    config_path: "steps/06_reporting.yaml"

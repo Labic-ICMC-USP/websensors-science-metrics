@@ -1,0 +1,2 @@
+description: "Materializa tabelas de indicadores e grafo canônico de colaboração no ArcadeDB."
+output_dir: "./outputs/science_metrics"

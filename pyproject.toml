@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "websensors-science-metrics"
+version = "0.2.0"
+description = "WebSensors Flow pipeline for OpenAlex ingestion, scientific knowledge graph enrichment, and ArcadeDB reporting."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "WebSensors Team" }]
+dependencies = [
+  "pydantic>=2.0,<3.0",
+  "PyYAML>=6.0",
+  "tqdm>=4.66",
+  "rich>=13.7",
+  "requests>=2.31",
+  "rapidfuzz>=3.9"
+]
+
+[project.optional-dependencies]
+observability = [
+  "mlflow>=3.10,<4.0",
+  "psutil>=5.9"
+]
+docs = [
+  "mkdocs>=1.6",
+  "mkdocs-material>=9.5",
+  "mkdocstrings[python]>=0.27"
+]
+test = ["pytest>=8.0"]
+all = [
+  "mlflow>=3.10,<4.0",
+  "psutil>=5.9",
+  "mkdocs>=1.6",
+  "mkdocs-material>=9.5",
+  "mkdocstrings[python]>=0.27",
+  "pytest>=8.0"
+]
+
+[project.scripts]
+websensors-science-metrics = "projects.science_metrics.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,47 @@
+site_name: WebSensors Science Metrics
+site_description: Pipeline WebSensors Flow para OpenAlex, Knowledge Graph, ArcadeDB e MLflow
+site_url: http://127.0.0.1:8000/
+theme:
+  name: material
+  language: pt-BR
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            members_order: source
+            filters:
+              - "!^_"
+nav:
+  - Início: index.md
+  - Tutorial completo: Tutorial-PT-BR.md
+  - Arquitetura: architecture.md
+  - Frontend v11 → pipeline: frontend_mapping.md
+  - Referência da API:
+      - Visão geral: api/index.md
+      - ArcadeDB: api/arcadedb_client.md
+      - OpenAlex: api/openalex_client.md
+      - Ingestão: api/ingest_data.md
+      - Resolução de entidades: api/entity_resolution.md
+      - Instituição principal: api/institution_model.md
+      - Steps: api/steps.md
+      - Configuração: api/project_config.md
+      - Utilitários: api/utils.md
+markdown_extensions:
+  - admonition
+  - attr_list
+  - codehilite
+  - toc:
+      permalink: true
