@@ -1,0 +1,24 @@
+{
+  "systemName": "Science Metrics",
+  "logoUrl": "https://websensors.icmc.usp.br/assets/img/logo.png",
+  "openAlex": {
+    "baseUrl": "https://api.openalex.org",
+    "authorsEndpoint": "/authors",
+    "worksEndpoint": "/works",
+    "sourcesEndpoint": "/sources",
+    "apiKey": "",
+    "mailto": "",
+    "perPage": 200,
+    "maxPagesPerAuthor": 10,
+    "requestDelayMs": 250,
+    "maxSourcesToEnrich": 150,
+    "maxExternalCoauthors": 80,
+    "nationalityRecentWorks": 10,
+    "nationalityConcurrency": 4
+  },
+  "defaults": {
+    "startYear": 2020,
+    "endYear": 2026,
+    "countryBrazil": "BR"
+  }
+}
