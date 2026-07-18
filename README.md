@@ -8,6 +8,8 @@ O projeto está organizado em três grandes frentes
 * Governo
 * Ciência e Inovação
 
+O WebSensors Science Metrics foca na frente de Ciência e Inovação.
+
 Em todas as frentes, os dados brutos passam por etapas de coleta, pré processamento, integração e enriquecimento para a construção de **grafos de conhecimento**.
 
 Esses grafos representam entidades, eventos e relações identificados nas diferentes fontes de dados e permitem conectar informações originalmente distribuídas entre bases independentes.
